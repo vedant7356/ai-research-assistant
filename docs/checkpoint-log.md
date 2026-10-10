@@ -52,3 +52,9 @@ Assignment read, plan approved by the user (3 design decisions).
 - Added paper detail page (/library/:id) with full abstract, cached summary loaded on open (never generated automatically), Generate button, Q&A; GET /api/library/{id}; library titles link to it; mobile top navigation (the sidebar was hidden below 860px with no replacement, so pages could not be switched).
 - User tested six steps (cached summary, no-summary state, ask, bad id 99999, narrow window): all pass. Wording of the empty-summary text changed after review.
 - Observed: asking a question about the passages themselves ("passages used") made the model list every excerpt number, so the UI showed "Passages used (13)". Harmless, but shows the citation list is whatever [n] the model writes.
+
+## Final UI check (2026-10-10, ~17:50)
+- Home dashboard added (search box, three action cards, recent research, empty state, error state, wider layout) to match the Claude Design home screen.
+- Rendered every page in a headless Chromium (agent-side, API mocked with sample data, so these images are NOT evidence for the report): Home, Discover, Library (with an expanded summary), Detail (with an answered question), Upload at 1440 px, and Home/Discover/Library/Detail at 390 px.
+- Defects found and fixed: summary headings had a large gap (h4 default margin); select arrows needed padding and a custom chevron; long search/ask placeholders were cut off on mobile; mobile had no navigation (fixed earlier). Citation styles from the model ([4], 【4】, [4†L1-L8]) are normalized.
+- Left out on purpose: Settings, persisted chat history, separate full-screen summary/ask pages (beyond the assignment; the detail page covers that content).

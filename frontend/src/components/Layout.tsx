@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { NavLink, Outlet } from 'react-router'
+import { NavLink, Outlet, useLocation } from 'react-router'
 import { fetchHealth, type HealthResponse } from '../api/client'
 
 function Logo() {
@@ -32,10 +32,15 @@ function SystemStatus() {
 }
 
 export default function Layout() {
+  const wide = useLocation().pathname === '/'   // the home dashboard uses the wider layout from the design
   return (
     <div className="shell">
       <nav className="sidebar" aria-label="Primary">
-        <div className="brand"><Logo /> ResearchMate AI</div>
+        <NavLink to="/" className="brand" style={{ color: 'inherit', textDecoration: 'none' }}><Logo /> ResearchMate AI</NavLink>
+        <NavLink to="/" end className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
+          <svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" /></svg>
+          Home
+        </NavLink>
         <NavLink to="/discover" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
           <svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
           Discover Papers
@@ -53,13 +58,14 @@ export default function Layout() {
       <header className="topbar">
         <div className="topbar-brand"><Logo /> ResearchMate AI</div>
         <nav className="topnav" aria-label="Primary (mobile)">
+          <NavLink to="/" end className={({ isActive }) => `topnav-link${isActive ? ' active' : ''}`}>Home</NavLink>
           <NavLink to="/discover" className={({ isActive }) => `topnav-link${isActive ? ' active' : ''}`}>Discover</NavLink>
           <NavLink to="/library" className={({ isActive }) => `topnav-link${isActive ? ' active' : ''}`}>Library</NavLink>
           <NavLink to="/upload" className={({ isActive }) => `topnav-link${isActive ? ' active' : ''}`}>Upload</NavLink>
         </nav>
       </header>
       <main className="main">
-        <div className="content"><Outlet /></div>
+        <div className={wide ? 'content content-wide' : 'content'}><Outlet /></div>
       </main>
     </div>
   )

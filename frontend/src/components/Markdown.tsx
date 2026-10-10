@@ -27,7 +27,7 @@ export default function Markdown({ text }: { text: string }) {
     const bullet = /^[-*•]\s+(.*)$/.exec(line)
     if (heading) {
       flush()
-      blocks.push(<h4 key={`h${blocks.length}`} style={{ fontSize: 14, fontWeight: 600, marginTop: 6 }}>{heading[1]}</h4>)
+      blocks.push(<h4 key={`h${blocks.length}`} style={{ fontSize: 14, fontWeight: 600, margin: '6px 0 0' }}>{heading[1]}</h4>)
     } else if (bullet) {
       bullets.push(bullet[1])
     } else {

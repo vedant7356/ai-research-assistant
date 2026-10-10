@@ -50,12 +50,16 @@ h1, h2, h3, p { margin: 0; }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
 .input { width: 100%; min-height: 44px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); font: 400 15px 'IBM Plex Sans', system-ui, sans-serif; color: var(--text); }
 .input::placeholder { color: #6B7183; }
-select.input { min-height: 38px; font-size: 14px; padding: 0 10px; width: auto; }
+select.input { min-height: 38px; font-size: 14px; padding: 0 34px 0 12px; width: auto; cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%235B6173' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m1.5 1.5 4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; background-size: 12px 8px; }
 .chip { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface); color: var(--primary); font: 500 13px 'IBM Plex Sans', system-ui, sans-serif; cursor: pointer; }
 .chip:hover { border-color: #B9B2EE; background: #F5F4FE; }
 .badge { display: inline-flex; align-items: center; gap: 5px; min-height: 22px; padding: 0 8px; border-radius: 5px; font: 500 12px 'IBM Plex Sans', system-ui, sans-serif; white-space: nowrap; }
 .badge-ok { background: var(--success-bg); color: var(--success); }
 .badge-warn { background: var(--warning-bg); color: var(--warning); }
+.badge-violet { background: var(--accent-soft); color: #4B3BC4; }
 .badge-neutral { background: #EEF0F5; color: var(--text-2); }
 
 /* Loading skeletons */
@@ -76,6 +80,7 @@ select.input { min-height: 38px; font-size: 14px; padding: 0 10px; width: auto; 
 .dot.down { background: #B42318; }
 .main { flex: 1; min-width: 0; padding: 40px; }
 .content { max-width: 880px; margin: 0 auto; }
+.content-wide { max-width: 1120px; }
 .topbar { display: none; }
 .stack { display: flex; flex-direction: column; gap: 22px; }
 

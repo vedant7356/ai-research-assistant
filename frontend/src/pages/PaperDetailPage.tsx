@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useLocation, useParams } from 'react-router'
 import { ApiError, getPaper, type LibraryItem } from '../api/client'
 import AskPanel from '../components/AskPanel'
 import SummaryPanel from '../components/SummaryPanel'
 
 export default function PaperDetailPage() {
   const { id } = useParams()
+  const { hash } = useLocation()
   const paperId = Number(id)
   const [paper, setPaper] = useState<LibraryItem | null>(null)
   const [error, setError] = useState<ApiError | null>(null)
@@ -26,6 +27,11 @@ export default function PaperDetailPage() {
       })
     return () => ctrl.abort()
   }, [paperId, tick])
+
+  // Arriving from "Ask questions" on the home page: bring the Q&A section into view.
+  useEffect(() => {
+    if (paper && hash === '#ask') document.getElementById('ask')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [paper, hash])
 
   const back = <Link to="/library" style={{ fontSize: 14, fontWeight: 500 }}>← My Library</Link>
 
@@ -87,7 +93,7 @@ export default function PaperDetailPage() {
         <SummaryPanel embedded paperId={paper.id} hasSummary={paper.hasSummary} onGenerated={reload} />
       </section>
 
-      <section className="card" style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '20px 24px' }}>
+      <section id="ask" className="card" style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '20px 24px' }}>
         <h2 style={{ fontSize: 17, fontWeight: 600 }}>Ask about this paper</h2>
         <AskPanel embedded paperId={paper.id} />
       </section>

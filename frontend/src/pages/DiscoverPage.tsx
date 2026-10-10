@@ -91,7 +91,7 @@ export default function DiscoverPage() {
           <div style={{ position: 'relative', flex: 1 }}>
             <svg className="ic" viewBox="0 0 24 24" aria-hidden="true" style={{ position: 'absolute', left: 16, top: 15, color: '#6B7183' }}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
             <input id="disc-q" className="input" type="text" value={input} onChange={e => setInput(e.target.value)}
-              placeholder="Search research papers, topics, authors, or keywords…"
+              placeholder="Search papers, topics, authors…"
               style={{ minHeight: 50, paddingLeft: 44, paddingRight: 44, fontSize: 16 }} />
             {input && (
               <button type="button" className="btn btn-ghost btn-icon" aria-label="Clear search" onClick={() => { setInput(''); update({ q: null }) }}

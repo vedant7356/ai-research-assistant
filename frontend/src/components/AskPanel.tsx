@@ -67,7 +67,7 @@ export default function AskPanel({ paperId, embedded = false }: { paperId: numbe
           <form onSubmit={e => void submit(e)} style={{ display: 'flex', gap: 8 }}>
             <label className="sr" htmlFor={`ask-${paperId}`}>Question about this paper</label>
             <input id={`ask-${paperId}`} className="input" style={{ flex: 1, minHeight: 38 }} maxLength={1000}
-              placeholder="Ask something about this paper…" value={question} onChange={e => setQuestion(e.target.value)} />
+              placeholder="Ask about this paper…" value={question} onChange={e => setQuestion(e.target.value)} />
             <button className="btn btn-primary btn-sm" type="submit" disabled={busy || question.trim() === ''}>Ask</button>
           </form>
         </div>
