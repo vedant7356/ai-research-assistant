@@ -81,7 +81,11 @@ select.input { min-height: 38px; font-size: 14px; padding: 0 10px; width: auto; 
 
 @media (max-width: 860px) {
   .sidebar { display: none; }
-  .topbar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: #FBFBFC; font-weight: 600; }
+  .topbar { display: flex; flex-direction: column; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: #FBFBFC; font-weight: 600; }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; }
+  .topnav { display: flex; gap: 6px; }
+  .topnav-link { flex: 1; text-align: center; padding: 9px 8px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--text-2); text-decoration: none; background: #ECEDF3; }
+  .topnav-link.active { background: #E9E7FB; color: var(--primary); font-weight: 600; }
   .shell { flex-direction: column; }
   .main { padding: 20px 16px 48px; }
   .h1 { font-size: 30px !important; }

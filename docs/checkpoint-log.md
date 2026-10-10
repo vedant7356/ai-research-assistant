@@ -47,3 +47,8 @@ Assignment read, plan approved by the user (3 design decisions).
 ## CP7 — Integration and stabilization: PASS (2026-10-10, ~17:10; user-run)
 - Six checks run by the user on the Mac: cold start (both servers, status panel up); full flow (search, save two, upload, summarize, ask); backend restart + refresh (papers and summaries persist, new question works); open-access paper (saved as abstract-only, became Full text after Summarize because the PDF was fetched and cached; summary quoted body-level figures); backend down (error with Retry, clean recovery); README read-through (matches).
 - Not covered: README setup run on a clean machine/fresh database; wrong-API-key and rate-limit messages (code paths only); mobile layout.
+
+## Design polish (optional, after CP7): DONE (2026-10-10, ~17:30; user-tested)
+- Added paper detail page (/library/:id) with full abstract, cached summary loaded on open (never generated automatically), Generate button, Q&A; GET /api/library/{id}; library titles link to it; mobile top navigation (the sidebar was hidden below 860px with no replacement, so pages could not be switched).
+- User tested six steps (cached summary, no-summary state, ask, bad id 99999, narrow window): all pass. Wording of the empty-summary text changed after review.
+- Observed: asking a question about the passages themselves ("passages used") made the model list every excerpt number, so the UI showed "Passages used (13)". Harmless, but shows the citation list is whatever [n] the model writes.

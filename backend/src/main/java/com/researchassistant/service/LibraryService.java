@@ -86,6 +86,11 @@ public class LibraryService {
                 .collect(Collectors.toList());
     }
 
+    public LibraryItemDto get(Long id) {
+        return repository.findById(id).map(LibraryItemDto::from).orElseThrow(() ->
+                new ApiException(HttpStatus.NOT_FOUND, "NOT_IN_LIBRARY", "That paper is not in your library.", false));
+    }
+
     /** Correct a paper's metadata (for example after imperfect PDF extraction). */
     public LibraryItemDto update(Long id, UpdatePaperRequest in) {
         Paper p = repository.findById(id).orElseThrow(() ->

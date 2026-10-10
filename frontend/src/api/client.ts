@@ -202,3 +202,7 @@ export function askPaper(id: number, question: string): Promise<Answer> {
     body: JSON.stringify({ question }),
   })
 }
+
+export function getPaper(id: number): Promise<LibraryItem> {
+  return request<LibraryItem>(`/api/library/${id}`)
+}

@@ -50,7 +50,14 @@ export default function Layout() {
         </NavLink>
         <SystemStatus />
       </nav>
-      <div className="topbar"><Logo /> ResearchMate AI</div>
+      <header className="topbar">
+        <div className="topbar-brand"><Logo /> ResearchMate AI</div>
+        <nav className="topnav" aria-label="Primary (mobile)">
+          <NavLink to="/discover" className={({ isActive }) => `topnav-link${isActive ? ' active' : ''}`}>Discover</NavLink>
+          <NavLink to="/library" className={({ isActive }) => `topnav-link${isActive ? ' active' : ''}`}>Library</NavLink>
+          <NavLink to="/upload" className={({ isActive }) => `topnav-link${isActive ? ' active' : ''}`}>Upload</NavLink>
+        </nav>
+      </header>
       <main className="main">
         <div className="content"><Outlet /></div>
       </main>

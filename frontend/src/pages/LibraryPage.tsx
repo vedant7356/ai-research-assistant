@@ -123,11 +123,12 @@ export default function LibraryPage() {
                   : <span className="badge badge-warn">Abstract only</span>}
                 {p.hasSummary && <span className="badge badge-ok">Summary ready</span>}
               </div>
-              <h3 className="serif" style={{ fontSize: 20, fontWeight: 600, lineHeight: 1.3 }}>{p.title}</h3>
+              <h3 className="serif" style={{ fontSize: 20, fontWeight: 600, lineHeight: 1.3 }}><Link to={`/library/${p.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>{p.title}</Link></h3>
               <p style={{ fontSize: 13, color: 'var(--muted)' }}>
                 {authorsShort(p.authors)} · {p.year ?? 'Year unknown'} · Added {new Date(p.createdAt).toLocaleDateString()}{p.originalFilename ? ` · ${p.originalFilename}` : ''}
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, paddingTop: 4 }}>
+                <Link className="btn btn-sm btn-ghost" to={`/library/${p.id}`}>Details</Link>
                 {p.url && (
                   <a className="btn btn-sm btn-ghost" href={p.url} target="_blank" rel="noopener noreferrer">Original paper</a>
                 )}

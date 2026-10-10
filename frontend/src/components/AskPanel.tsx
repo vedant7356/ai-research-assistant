@@ -8,8 +8,8 @@ interface Turn {
   error?: string
 }
 
-export default function AskPanel({ paperId }: { paperId: number }) {
-  const [open, setOpen] = useState(false)
+export default function AskPanel({ paperId, embedded = false }: { paperId: number; embedded?: boolean }) {
+  const [open, setOpen] = useState(embedded)
   const [question, setQuestion] = useState('')
   const [busy, setBusy] = useState(false)
   const [turns, setTurns] = useState<Turn[]>([])
@@ -32,11 +32,15 @@ export default function AskPanel({ paperId }: { paperId: number }) {
 
   return (
     <>
-      <button className="btn btn-sm" onClick={() => setOpen(o => !o)} aria-expanded={open}>
-        {open ? 'Hide Q&A' : 'Ask a question'}
-      </button>
+      {!embedded && (
+        <button className="btn btn-sm" onClick={() => setOpen(o => !o)} aria-expanded={open}>
+          {open ? 'Hide Q&A' : 'Ask a question'}
+        </button>
+      )}
       {open && (
-        <div style={{ flexBasis: '100%', display: 'flex', flexDirection: 'column', gap: 12, padding: 14, marginTop: 4, border: '1px solid var(--border)', borderRadius: 10, background: 'var(--surface)' }}>
+        <div style={embedded
+          ? { display: 'flex', flexDirection: 'column', gap: 12 }
+          : { flexBasis: '100%', display: 'flex', flexDirection: 'column', gap: 12, padding: 14, marginTop: 4, border: '1px solid var(--border)', borderRadius: 10, background: 'var(--surface)' }}>
           {turns.map((t, i) => (
             <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <p style={{ fontWeight: 600, fontSize: 14 }}>{t.question}</p>

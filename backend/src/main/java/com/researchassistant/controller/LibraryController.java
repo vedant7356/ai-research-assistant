@@ -23,6 +23,7 @@ import com.researchassistant.service.LibraryService;
 /**
  * POST   /api/library        save a search result (201 new, 200 if it was already saved)
  * GET    /api/library        list: ?q=&source=ALL|SAVED|UPLOAD&sort=recent|title|year
+ * GET    /api/library/{id}   one paper
  * PATCH  /api/library/{id}   correct title/authors/year/abstract
  * DELETE /api/library/{id}   remove (204)
  */
@@ -48,6 +49,11 @@ public class LibraryController {
             @RequestParam(defaultValue = "ALL") String source,
             @RequestParam(defaultValue = "recent") String sort) {
         return Map.of("items", libraryService.list(q, source, sort));
+    }
+
+    @GetMapping("/{id}")
+    public LibraryItemDto get(@PathVariable Long id) {
+        return libraryService.get(id);
     }
 
     @PatchMapping("/{id}")
