@@ -1,0 +1,103 @@
+/* Design tokens (from the Claude Design handoff) */
+:root {
+  --primary: #2B2F77;
+  --primary-hover: #20235C;
+  --accent: #5B47D6;
+  --accent-soft: #EFEDFC;
+  --text: #1A1D2B;
+  --text-2: #3D4253;
+  --muted: #5B6173;
+  --border: #E4E6ED;
+  --border-strong: #D9DCE5;
+  --bg: #F6F7F9;
+  --surface: #FFFFFF;
+  --success: #1E6B44;
+  --success-bg: #E8F4EE;
+  --warning: #7A4A00;
+  --warning-bg: #FDF3E1;
+  --error: #B42318;
+  --hover: #F1F2F7;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); }
+a { color: #4B3BC4; }
+a:hover { color: var(--primary); }
+h1, h2, h3, p { margin: 0; }
+
+.serif { font-family: 'Newsreader', Georgia, serif; letter-spacing: -0.01em; }
+.ic { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); font: 500 14px/1 'IBM Plex Sans', system-ui, sans-serif; cursor: pointer; text-decoration: none; white-space: nowrap; transition: background .12s, border-color .12s; }
+.btn:hover { background: var(--hover); color: var(--text); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn-primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); color: #fff; }
+.btn-ghost { background: transparent; border-color: transparent; }
+.btn-ghost:hover { background: #ECEDF3; }
+.btn-sm { min-height: 36px; padding: 0 12px; font-size: 13px; }
+.btn-icon { min-height: 36px; width: 36px; padding: 0; }
+.link-btn { background: none; border: 0; padding: 0; color: #4B3BC4; font: 500 13px 'IBM Plex Sans', system-ui, sans-serif; cursor: pointer; }
+.link-btn:hover { text-decoration: underline; }
+:is(.btn, .input, .chip, .link-btn, .nav-link):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Surfaces and inputs */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+.input { width: 100%; min-height: 44px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); font: 400 15px 'IBM Plex Sans', system-ui, sans-serif; color: var(--text); }
+.input::placeholder { color: #6B7183; }
+select.input { min-height: 38px; font-size: 14px; padding: 0 10px; width: auto; }
+.chip { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface); color: var(--primary); font: 500 13px 'IBM Plex Sans', system-ui, sans-serif; cursor: pointer; }
+.chip:hover { border-color: #B9B2EE; background: #F5F4FE; }
+.badge { display: inline-flex; align-items: center; gap: 5px; min-height: 22px; padding: 0 8px; border-radius: 5px; font: 500 12px 'IBM Plex Sans', system-ui, sans-serif; white-space: nowrap; }
+.badge-ok { background: var(--success-bg); color: var(--success); }
+.badge-warn { background: var(--warning-bg); color: var(--warning); }
+.badge-neutral { background: #EEF0F5; color: var(--text-2); }
+
+/* Loading skeletons */
+.skel { background: linear-gradient(90deg, #ECEEF3 0%, #F5F6F9 50%, #ECEEF3 100%); background-size: 200% 100%; animation: sh 1.3s ease-in-out infinite; border-radius: 6px; }
+@keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+
+/* App shell */
+.shell { min-height: 100vh; display: flex; }
+.sidebar { width: 248px; flex: none; display: flex; flex-direction: column; gap: 4px; padding: 20px 14px; border-right: 1px solid var(--border); background: #FBFBFC; position: sticky; top: 0; height: 100vh; }
+.brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 22px; font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+.nav-link { display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border-radius: 8px; color: var(--text-2); font-weight: 500; font-size: 14px; text-decoration: none; }
+.nav-link:hover { background: #ECEDF3; color: var(--text-2); }
+.nav-link.active { background: #E9E7FB; color: var(--primary); font-weight: 600; }
+.status { margin-top: auto; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-size: 12.5px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background: #B9BDCB; }
+.dot.up { background: #1E6B44; }
+.dot.down { background: #B42318; }
+.main { flex: 1; min-width: 0; padding: 40px; }
+.content { max-width: 880px; margin: 0 auto; }
+.topbar { display: none; }
+.stack { display: flex; flex-direction: column; gap: 22px; }
+
+@media (max-width: 860px) {
+  .sidebar { display: none; }
+  .topbar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: #FBFBFC; font-weight: 600; }
+  .shell { flex-direction: column; }
+  .main { padding: 20px 16px 48px; }
+  .h1 { font-size: 30px !important; }
+  .stack-sm { flex-direction: column; align-items: stretch !important; }
+}
+
+/* Saved state for the Save button */
+.btn-saved { background: var(--success-bg); border-color: #BFE0CD; color: var(--success); }
+.btn-saved:disabled { opacity: 1; cursor: default; }
+.btn-danger { background: var(--error); border-color: var(--error); color: #fff; }
+.btn-danger:hover { background: #8F1C13; color: #fff; }
+
+/* Upload drop zone and form fields */
+.drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 240px; padding: 32px; border: 1.5px dashed #B9BDCB; border-radius: 12px; background: var(--surface); text-align: center; cursor: pointer; }
+.drop:hover, .drop.is-over { border-color: var(--accent); background: #F7F6FE; }
+.drop:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 500; color: var(--text-2); }
+textarea.input { padding: 12px 14px; line-height: 1.5; resize: vertical; min-height: 0; }
+.hint-warn { font-size: 12.5px; font-weight: 400; color: var(--warning); }
