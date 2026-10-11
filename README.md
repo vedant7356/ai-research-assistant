@@ -12,6 +12,28 @@ A small full-stack web app for working with research papers: search real papers,
 | **Summaries** | "Summarize" sends the paper's real text to an LLM (Purdue GenAI Studio, `gpt-oss:120b`). Uses the full PDF text when available (uploads, or the open-access PDF of a saved paper), otherwise the abstract, and says which. Summaries are cached. |
 | **Ask questions** | "Ask a question" retrieves the most relevant excerpts of the selected paper (keyword scoring) and asks the LLM to answer only from them, with `[n]` citations and a "Passages used" section. If the text does not contain the answer it says so. |
 
+## Screenshots
+
+**Home**: search box, quick actions and your most recent papers.
+
+![Home](docs/screenshots/home.png)
+
+**Discover**: search results from OpenAlex with year, sort and open-access filters. "Full text available" and "Abstract only" badges show what the summary and Q&A can use.
+
+![Discover](docs/screenshots/discover.png)
+
+**My Library**: saved and uploaded papers stored in PostgreSQL, with summary and Q&A actions on each one.
+
+![My Library](docs/screenshots/library.png)
+
+**Summary and Q&A**: an LLM summary of one saved paper. This one was written from the abstract only, and the app says so. The "Ask about this paper" box sits underneath.
+
+![Summary and Q&A](docs/screenshots/summary-qa.png)
+
+**Upload a PDF**: title, authors, year and abstract are extracted from the PDF and shown in a form so you can correct them.
+
+![Upload](docs/screenshots/upload.png)
+
 ## Architecture
 
 ```
