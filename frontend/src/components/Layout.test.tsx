@@ -23,7 +23,7 @@ function renderAt(path: string) {
   )
 }
 
-beforeEach(() => vi.mocked(fetchHealth).mockReset())
+beforeEach(() => { vi.mocked(fetchHealth).mockReset() })
 
 describe('Layout', () => {
   it('shows the navigation links and the routed page', () => {

@@ -18,7 +18,7 @@ function makePaper(overrides: Partial<Paper> = {}): Paper {
   }
 }
 
-beforeEach(() => vi.mocked(savePaper).mockReset())
+beforeEach(() => { vi.mocked(savePaper).mockReset() })
 
 describe('PaperCard', () => {
   it('shows title, authors, year and abstract', () => {

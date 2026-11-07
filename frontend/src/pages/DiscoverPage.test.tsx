@@ -26,7 +26,7 @@ function renderPage(url = '/discover') {
   return render(<MemoryRouter initialEntries={[url]}><DiscoverPage /></MemoryRouter>)
 }
 
-beforeEach(() => vi.mocked(searchPapers).mockReset())
+beforeEach(() => { vi.mocked(searchPapers).mockReset() })
 
 describe('DiscoverPage', () => {
   it('starts with example topics and does not search', () => {

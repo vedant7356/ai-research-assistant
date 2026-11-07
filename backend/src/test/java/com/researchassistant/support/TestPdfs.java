@@ -104,6 +104,30 @@ public final class TestPdfs {
         }
     }
 
+    /** One page with a single baseline holding two text runs far apart (like two author columns or a margin line number). */
+    public static byte[] twoRunsOnOneLine(String left, String right, float size) {
+        try (PDDocument doc = new PDDocument()) {
+            PDPage page = new PDPage(PDRectangle.LETTER);
+            doc.addPage(page);
+            try (PDPageContentStream cs = new PDPageContentStream(doc, page)) {
+                PDType1Font font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+                cs.beginText();
+                cs.setFont(font, size);
+                cs.newLineAtOffset(72, 700);
+                cs.showText(left);
+                cs.endText();
+                cs.beginText();
+                cs.setFont(font, size);
+                cs.newLineAtOffset(400, 700);
+                cs.showText(right);
+                cs.endText();
+            }
+            return save(doc);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     private static void writePage(PDDocument doc, List<Line> lines) throws IOException {
         PDPage page = new PDPage(PDRectangle.LETTER);
         doc.addPage(page);

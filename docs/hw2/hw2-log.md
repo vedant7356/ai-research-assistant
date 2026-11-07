@@ -78,12 +78,37 @@ Backend/frontend coverage needs `-Dmaven.test.failure.ignore=true` / `--coverage
 
 Evidence: `evidence/cp1-*.png`, `evidence/cp1-frontend-sandbox-run.txt`.
 
+## CP3: improvement round 1 (strategy: feedback-driven)
+
+Input given to the agent: the 12 failures with my triage, the JaCoCo/v8 uncovered lines, and my CP2 audit (`cp2-evaluation.md`).
+Rule kept: the two app bugs were NOT hidden, their tests stay red.
+
+What changed:
+- Fixed the 10 bad tests (4 frontend `beforeEach` bodies, `LibraryPage` badge test scoped per card, backend blank-query test now uses `.param`).
+- Backend, 15 new tests in 4 files: `GlobalExceptionHandlerTest` (413 and error mapping), `SaveRaceTest` (duplicate save / duplicate upload fallbacks, plus integrity error with nothing to fall back on is not swallowed), `PdfLineGapTest` (GAP marker, margin numbers), `PdfMetadataFallbackTest` (info-field fallbacks, junk titles, implausible year, 300-char cut, arXiv header skipped). New `TestPdfs.twoRunsOnOneLine` helper.
+- Frontend, 30 new tests in 3 files: `HomePage`, `PaperDetailPage`, `App` routing.
+
+Result, my Mac, 2026-11-07:
+
+| | Tests | Passed | Failed | Lines | Branches |
+|---|---|---|---|---|---|
+| Backend before -> after | 130 -> 145 | 127 -> 143 | 3 -> 2 | 95.7% -> 97.7% (719/736) | 81.4% -> 83.3% (475/570) |
+| Frontend before -> after | 111 -> 141 | 102 -> 141 | 9 -> 0 | 81.7% -> 98.0% (349/356) | 75.8% -> 94.5% (430/455) |
+
+The 2 remaining backend failures are the real app bugs (null-id search NPE, chunk size soft cap).
+All 15 new backend tests passed on their first run on the Mac (they had never been compiled before). The new frontend tests were first run in the sandbox copy, and passed on the Mac too.
+
+Honest note: backend coverage was already high, so round 1 mostly bought correctness (fewer wrong tests) and not percentage. Frontend gained the most, from 4 files at 0%.
+Still uncovered on the frontend: `main.tsx` (bootstrap, 1 line), `UploadPage` 89.9% stmts.
+
+Evidence: `evidence/cp3-*.png`.
+
 ## Checkpoints
 
 - [x] CP0 setup and baseline (frontend 0 tests; backend `contextLoads` passes on H2)
 - [x] CP1 initial suite generated and run (backend 130 tests / 3 fail, frontend 111 tests / 9 fail)
-- [ ] CP2 initial evaluation
-- [ ] CP3 improvement round 1
+- [x] CP2 initial evaluation (see cp2-evaluation.md)
+- [x] CP3 improvement round 1 (feedback-driven)
 - [ ] CP4 improvement round 2
 - [ ] CP5 final evaluation
 - [ ] CP6 README + clean-clone test + push

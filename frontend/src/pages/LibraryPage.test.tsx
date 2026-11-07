@@ -51,12 +51,15 @@ describe('LibraryPage', () => {
     ])
     renderPage()
     await screen.findByText('Library paper 1')
-    expect(screen.getByText('Uploaded PDF')).toBeInTheDocument()
-    expect(screen.getByText('Saved from search')).toBeInTheDocument()
-    expect(screen.getByText('Full text')).toBeInTheDocument()
-    expect(screen.getByText('Abstract only')).toBeInTheDocument()
-    expect(screen.getByText('Summary ready')).toBeInTheDocument()
-    expect(screen.getByText(/my-paper\.pdf/)).toBeInTheDocument()
+    // "Saved from search" is also an option in the Source filter, so look inside each paper card.
+    const [uploadCard, savedCard] = screen.getAllByRole('article')
+    expect(within(uploadCard).getByText('Uploaded PDF')).toBeInTheDocument()
+    expect(within(uploadCard).getByText('Full text')).toBeInTheDocument()
+    expect(within(uploadCard).getByText('Summary ready')).toBeInTheDocument()
+    expect(within(uploadCard).getByText(/my-paper\.pdf/)).toBeInTheDocument()
+    expect(within(savedCard).getByText('Saved from search')).toBeInTheDocument()
+    expect(within(savedCard).getByText('Abstract only')).toBeInTheDocument()
+    expect(within(savedCard).queryByText('Summary ready')).toBeNull()
   })
 
   it('abbreviates many authors and shows unknown authors and years', async () => {

@@ -15,7 +15,7 @@ const ANSWER: Answer = {
   sources: [{ n: 1, excerpt: 'Phones store tokens in plain text files.' }],
 }
 
-beforeEach(() => vi.mocked(askPaper).mockReset())
+beforeEach(() => { vi.mocked(askPaper).mockReset() })
 
 async function ask(question: string) {
   await userEvent.type(screen.getByLabelText('Question about this paper'), question)

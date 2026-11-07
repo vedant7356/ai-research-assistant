@@ -134,7 +134,7 @@ class LibraryApiTest extends ApiTestBase {
         mvc.perform(get("/api/library?q=hinton")).andExpect(jsonPath("$.items.length()").value(1))
                 .andExpect(jsonPath("$.items[0].title").value("Deep Learning"));
         mvc.perform(get("/api/library?q=nomatch")).andExpect(jsonPath("$.items").isEmpty());
-        mvc.perform(get("/api/library?q=%20%20")).andExpect(jsonPath("$.items.length()").value(2));
+        mvc.perform(get("/api/library").param("q", "  ")).andExpect(jsonPath("$.items.length()").value(2));
     }
 
     @Test
