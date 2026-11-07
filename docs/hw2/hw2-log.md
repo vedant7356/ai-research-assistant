@@ -103,13 +103,48 @@ Still uncovered on the frontend: `main.tsx` (bootstrap, 1 line), `UploadPage` 89
 
 Evidence: `evidence/cp3-*.png`.
 
+## CP4: improvement round 2 (strategy: requirements and fault hunting, not coverage)
+
+Different from round 1 on purpose: round 1 chased failures and uncovered lines, round 2 asked "what would a hostile or odd input do, and would the tests notice if the code were wrong?"
+
+Input to the agent: HW1 requirements (error envelope, untrusted paper text, library behaviour), my CP2 list of weak tests, and a rule to pick tests by risk and not by coverage.
+
+What changed:
+- Strengthened weak assertions: grouped citations now `[1, 3]` over three real excerpts (the old test used `[1, 1]` and would pass if only the first number of a group were read), duplicate citation collapse kept as its own test, answer text checked when a citation points nowhere, `error.retryable`/`message` asserted on the Qa and Upload error tests, API-key leak test now feeds hostile error bodies for 5 statuses and has a positive control that the key really was sent.
+- `AdversarialApiTest` (17): malformed JSON, wrong content type, unknown route/method, non-numeric ids, whitespace questions, 500 never leaks internals, long/trimmed titles, blank external ids, duplicate save, sort orders, two prompt-injection tests.
+- `ErrorContractTest` (backend, 5) + `contract.test.ts` (frontend, 6): both layers checked against one shared fixture `contract/error-envelope.json`.
+- Regression tests for the three fixed bugs (chunker x3, summary fence x1, plus the existing red tests that now pass).
+
+Bugs, found by the suite then fixed (3 small app edits):
+
+| # | Bug | Found by | Fix |
+|---|---|---|---|
+| 1 | Search page where no result has an id returns 500 (`Set.of().contains(null)` NPE) | initial suite, `SearchApiTest` | `externalId != null` guard in `PaperSearchController` |
+| 2 | `TextChunker` chunks can exceed MAX_CHARS (1817 > 1800); one huge line gives one huge chunk | initial suite, `TextChunkerTest` | flush before overflow, cut huge lines at word boundary |
+| 3 | Text inside an uploaded PDF can contain `EXCERPTS>>>` / `PAPER TEXT>>>` and close the "this is data" fence, so its own text lands where the user's question goes (prompt-injection hardening gap) | round 2, `AdversarialApiTest.paperTextCannotCloseTheExcerptFence...` | `defang()` in `QaService`, same replacement in `SummaryService` |
+
+Bug 3 was found only because round 2 was threat-driven. No coverage number would have flagged it, the line was already covered.
+
+Results (my Mac, 2026-11-07), pre-fix run showed exactly 3 failures (the 3 bugs above), post-fix run 0:
+
+| | Tests | Failed | Lines | Branches |
+|---|---|---|---|---|
+| Backend after round 1 -> after round 2 | 145 -> 172 | 2 -> 0 | 97.7% (719/736) -> 97.7% (732/749) | 83.3% -> 83.6% (488/584) |
+| Frontend after round 1 -> after round 2 | 141 -> 147 | 0 -> 0 | 98.0% -> 98.3% (350/356) | 94.5% -> 94.5% (430/455) |
+
+Coverage barely moved in round 2 and that is the point: the value was in assertion strength and the third bug, not the percentage.
+
+Evidence: `evidence/cp4-backend-prefix-run-part*.png` (before fixes), `evidence/cp4-frontend-run-partOne.png` (shows the backend 172/0 run and the frontend 147 run), `evidence/cp4-frontend-run-partTwo.png` (coverage table).
+
+Still to do for CP5: seeded-fault comparison (`mutation/seeded_faults.py`, 21 planted faults, initial suite vs final suite).
+
 ## Checkpoints
 
 - [x] CP0 setup and baseline (frontend 0 tests; backend `contextLoads` passes on H2)
 - [x] CP1 initial suite generated and run (backend 130 tests / 3 fail, frontend 111 tests / 9 fail)
 - [x] CP2 initial evaluation (see cp2-evaluation.md)
 - [x] CP3 improvement round 1 (feedback-driven)
-- [ ] CP4 improvement round 2
+- [x] CP4 improvement round 2 (requirements and fault driven)
 - [ ] CP5 final evaluation
 - [ ] CP6 README + clean-clone test + push
 - [ ] CP7 report + submit

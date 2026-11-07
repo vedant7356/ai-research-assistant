@@ -54,4 +54,15 @@ class PdfMetadataFallbackTest {
                 new TextLine("Ann Lee", 12)));
         assertThat(meta.title()).isEqualTo("Real Title of the Paper");
     }
+
+    // ---- found by the seeded-fault check (M15): with several years on the page the earliest one wins ----
+
+    @Test
+    void theEarliestYearOnTheFirstPageIsUsedNotTheLatest() {
+        var meta = PdfMetadataExtractor.extract(pdf(null, null, null,
+                new TextLine("A Reasonably Long Paper Title", 20),
+                new TextLine("Published 2021", 10),
+                new TextLine("Copyright 2023 by the authors", 10)));
+        assertThat(meta.year()).isEqualTo(2021);
+    }
 }

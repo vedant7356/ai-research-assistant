@@ -137,4 +137,19 @@ class UploadApiTest extends ApiTestBase {
                 .andExpect(jsonPath("$.missingFields[0]").value("title"))
                 .andExpect(jsonPath("$.missingFields[1]").value("authors"));
     }
+
+    // ---- found by the seeded-fault check (M09, M10): the 100-character "has real text" boundary ----
+
+    @Test
+    void aPdfWith99CharactersOfTextIsRejectedAsEmpty() throws Exception {
+        upload("short.pdf", TestPdfs.pdf(TestPdfs.line("x".repeat(99), 10)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.error.code").value("EMPTY_PDF"));
+    }
+
+    @Test
+    void aPdfWithExactly100CharactersOfTextIsAccepted() throws Exception {
+        upload("just-enough.pdf", TestPdfs.pdf(TestPdfs.line("x".repeat(100), 10)))
+                .andExpect(status().isCreated());
+    }
 }

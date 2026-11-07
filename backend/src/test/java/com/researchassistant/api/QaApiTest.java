@@ -181,4 +181,29 @@ class QaApiTest extends ApiTestBase {
                 .andExpect(jsonPath("$.error.message").value("Down."))
                 .andExpect(jsonPath("$.error.retryable").value(true));
     }
+
+    // ---- found by the seeded-fault check (M02, M04): two limits no test pinned down ----
+
+    @Test
+    void aPaperOfExactlyThe30000CharacterLimitIsStillSentWhole() throws Exception {
+        // 24 lines of exactly 1250 characters (newline included) = 30000, each one its own excerpt.
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < 24; i++) text.append("y".repeat(1248)).append(".\n");
+        assertThat(text.length()).isEqualTo(30_000);
+        Paper p = savedPaper("Paper", ABSTRACT, text.toString());
+        when(llm.chat(anyString(), anyString(), anyInt())).thenReturn("ok");
+        ask(p, "Question?").andExpect(status().isOk());
+
+        ArgumentCaptor<String> user = ArgumentCaptor.forClass(String.class);
+        verify(llm).chat(anyString(), user.capture(), anyInt());
+        assertThat(user.getValue()).contains("[1] ").contains("[13] ").contains("[24] ");   // all 24, not just the best 8
+    }
+
+    @Test
+    void sourceExcerptsAreCutAt500CharactersWithAnEllipsis() throws Exception {
+        Paper p = savedPaper("Paper", ABSTRACT, "x".repeat(1248) + ".");
+        when(llm.chat(anyString(), anyString(), anyInt())).thenReturn("Answer [1].");
+        ask(p, "Question?").andExpect(status().isOk())
+                .andExpect(jsonPath("$.sources[0].excerpt").value("x".repeat(500) + "…"));
+    }
 }
