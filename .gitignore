@@ -18,3 +18,6 @@ frontend/dist/
 
 # local test PDFs (copyrighted papers, not for the repo)
 test-pdfs/
+
+# Homework 2 coverage output
+frontend/coverage/
