@@ -73,7 +73,7 @@ public class SummaryService {
         String user = "Title: " + p.getTitle()
                 + (p.getYear() == null ? "" : "\nYear: " + p.getYear())
                 + "\nText type: " + (basis.equals("ABSTRACT_ONLY") ? "abstract only" : "full paper text")
-                + "\n\n<<<PAPER TEXT\n" + text + "\nPAPER TEXT>>>";
+                + "\n\n<<<PAPER TEXT\n" + text.replace("PAPER TEXT>>>", "PAPER TEXT>> >").replace("<<<PAPER TEXT", "<< <PAPER TEXT") + "\nPAPER TEXT>>>";
         String summary = llm.chat(SYSTEM, user, 4000);
 
         p.setSummary(summary);

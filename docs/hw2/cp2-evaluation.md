@@ -46,7 +46,7 @@ Passing tests that are weak or misleading (read the bodies, not just the names):
 | `QaApiTest.citationsToExcerptsThatDoNotExistAreIgnored` | checks `sources` is empty but not what happens to the `[9]` in the answer text |
 | `LlmClientTest.apiKeyIsNeverIncludedInErrorMessages` | only a negative assertion on one 401 with an empty body, passes trivially if the message is just generic |
 | `UploadApiTest.requestWithoutAFilePartIsABadRequest` | status code only, no check of the error envelope (`error.code`) |
-| 6 `UploadApiTest`/`QaApiTest` error tests | check status but not the `code`/`retryable` the frontend actually reads |
+| 6 `UploadApiTest`/`QaApiTest` error tests | check the status and mostly the `code`, but none checked `retryable` or the message, which the frontend reads. (Correction: my first heuristic scan said "status only"; reading the bodies showed most did check `error.code`. The gap is `retryable`/`message`, not the code.) |
 | `PaperAndDtoTest` (5 tests) | getters and a text-column round trip, they add coverage numbers but little fault-finding value |
 
 Redundancy: the "generic message for unexpected errors" test is repeated in AskPanel, SummaryPanel and PaperCard (same pattern, same assertion). Not wrong, but 3 tests for one idea.

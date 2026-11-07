@@ -133,7 +133,13 @@ class LlmClientTest {
 
     @Test
     void apiKeyIsNeverIncludedInErrorMessages() {
-        server.reply(Reply.json(401, "{}"));
-        assertThat(chatFails().getMessage()).doesNotContain("test-key");
+        for (int status : new int[] {401, 403, 429, 500, 503}) {
+            // A hostile or careless provider echoes the key back in its error body.
+            server.reply(Reply.json(status, "{\"error\":{\"message\":\"Incorrect API key provided: test-key\"}}"));
+            ApiException e = chatFails();
+            assertThat(e.getMessage()).as("HTTP %d message", status).doesNotContain("test-key");
+            // Positive control: the key really was sent, so the check above is not passing for the wrong reason.
+            assertThat(server.lastAuthorization()).isEqualTo("Bearer test-key");
+        }
     }
 }

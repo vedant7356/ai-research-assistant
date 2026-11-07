@@ -33,19 +33,35 @@ public final class TextChunker {
         for (String raw : text.split("\\n")) {
             String line = raw.trim();
             if (line.isEmpty()) continue;
-            if (cur.length() > 0) {
-                char last = cur.charAt(cur.length() - 1);
-                if (last == '-') cur.setLength(cur.length() - 1); else cur.append(' ');
+            // A single line longer than the maximum (PDF text without line breaks) is cut up first, at a space if possible.
+            while (line.length() > MAX_CHARS) {
+                int cut = line.lastIndexOf(' ', MAX_CHARS);
+                if (cut < MAX_CHARS / 2) cut = MAX_CHARS;
+                addLine(out, cur, line.substring(0, cut).trim());
+                line = line.substring(cut).trim();
             }
-            cur.append(line);
-            boolean sentenceEnd = line.endsWith(".") || line.endsWith("?") || line.endsWith(":");
-            if ((cur.length() >= TARGET_CHARS && sentenceEnd) || cur.length() >= MAX_CHARS) {
-                out.add(new Chunk(out.size() + 1, cur.toString()));
-                cur.setLength(0);
-            }
+            if (!line.isEmpty()) addLine(out, cur, line);
         }
         if (cur.length() > 0) out.add(new Chunk(out.size() + 1, cur.toString()));
         return out;
+    }
+
+    private static void addLine(List<Chunk> out, StringBuilder cur, String line) {
+        // Start a new excerpt instead of letting this line push the current one past the maximum.
+        if (cur.length() > 0 && cur.length() + 1 + line.length() > MAX_CHARS) {
+            out.add(new Chunk(out.size() + 1, cur.toString()));
+            cur.setLength(0);
+        }
+        if (cur.length() > 0) {
+            char last = cur.charAt(cur.length() - 1);
+            if (last == '-') cur.setLength(cur.length() - 1); else cur.append(' ');
+        }
+        cur.append(line);
+        boolean sentenceEnd = line.endsWith(".") || line.endsWith("?") || line.endsWith(":");
+        if ((cur.length() >= TARGET_CHARS && sentenceEnd) || cur.length() >= MAX_CHARS) {
+            out.add(new Chunk(out.size() + 1, cur.toString()));
+            cur.setLength(0);
+        }
     }
 
     /** The k chunks that best match the question, returned in document order. Falls back to the first chunks if nothing matches. */

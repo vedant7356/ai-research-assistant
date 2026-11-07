@@ -87,12 +87,15 @@ class UploadApiTest extends ApiTestBase {
     @Test
     void emptyFileIsRejected() throws Exception {
         upload("empty.pdf", new byte[0]).andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error.code").value("EMPTY_FILE"));
+                .andExpect(jsonPath("$.error.code").value("EMPTY_FILE"))
+                .andExpect(jsonPath("$.error.retryable").value(false));
     }
 
     @Test
     void requestWithoutAFilePartIsABadRequest() throws Exception {
-        mvc.perform(multipart("/api/uploads")).andExpect(status().isBadRequest());
+        mvc.perform(multipart("/api/uploads")).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error.code").value("HTTP_400"))
+                .andExpect(jsonPath("$.error.retryable").value(false));
     }
 
     @Test
@@ -106,21 +109,24 @@ class UploadApiTest extends ApiTestBase {
     @Test
     void pdfWithTooLittleTextIsRejected() throws Exception {
         upload("tiny.pdf", TestPdfs.pdf(TestPdfs.line("Hello", 12))).andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.error.code").value("EMPTY_PDF"));
+                .andExpect(jsonPath("$.error.code").value("EMPTY_PDF"))
+                .andExpect(jsonPath("$.error.retryable").value(false));
     }
 
     @Test
     void passwordProtectedPdfIsRejectedClearly() throws Exception {
         upload("locked.pdf", TestPdfs.encrypted(TestPdfs.line("Secret contents of a locked document.", 12)))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.error.code").value("PASSWORD_PROTECTED"));
+                .andExpect(jsonPath("$.error.code").value("PASSWORD_PROTECTED"))
+                .andExpect(jsonPath("$.error.retryable").value(false));
     }
 
     @Test
     void damagedPdfIsRejectedClearly() throws Exception {
         upload("broken.pdf", "%PDF-1.4\nthis file claims to be a pdf but is not".getBytes(StandardCharsets.ISO_8859_1))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.error.code").value("INVALID_PDF"));
+                .andExpect(jsonPath("$.error.code").value("INVALID_PDF"))
+                .andExpect(jsonPath("$.error.retryable").value(false));
     }
 
     @Test

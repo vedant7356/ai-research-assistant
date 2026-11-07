@@ -1,0 +1,7 @@
+{
+  "notInLibrary":  { "status": 404, "body": { "error": { "code": "NOT_IN_LIBRARY",    "message": "That paper is not in your library.",         "retryable": false } } },
+  "missingTitle":  { "status": 400, "body": { "error": { "code": "VALIDATION_FAILED", "message": "A paper needs a title to be saved.",         "retryable": false } } },
+  "llmDown":       { "status": 502, "body": { "error": { "code": "LLM_UNAVAILABLE",   "message": "Down.",                                      "retryable": true  } } },
+  "fileTooLarge":  { "status": 413, "body": { "error": { "code": "FILE_TOO_LARGE",    "message": "That file is larger than the 25 MB limit.",  "retryable": false } } },
+  "unexpected":    { "status": 500, "body": { "error": { "code": "INTERNAL",          "message": "Something went wrong on the server.",        "retryable": true  } } }
+}

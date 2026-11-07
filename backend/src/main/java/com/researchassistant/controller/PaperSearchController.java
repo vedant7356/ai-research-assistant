@@ -37,7 +37,7 @@ public class PaperSearchController {
         SearchResponse r = searchService.search(q, yearFrom, "newest".equalsIgnoreCase(sort), openAccessOnly, page, limit);
         // Mark results that are already in the library (one query for the whole page).
         Set<String> saved = libraryService.savedExternalIds(r.items().stream().map(PaperDto::externalId).toList());
-        List<PaperDto> marked = r.items().stream().map(p -> p.withInLibrary(saved.contains(p.externalId()))).toList();
+        List<PaperDto> marked = r.items().stream().map(p -> p.withInLibrary(p.externalId() != null && saved.contains(p.externalId()))).toList();
         return new SearchResponse(r.query(), r.total(), r.page(), r.limit(), marked);
     }
 }

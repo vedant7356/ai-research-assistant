@@ -92,4 +92,35 @@ class TextChunkerTest {
         List<Chunk> top = TextChunker.topMatches(chunks, "what is this paper about", 2);
         assertThat(top).extracting(Chunk::n).containsExactly(1, 2);
     }
+
+    // ---- regression tests for the max-size bug found in round 1 (fixed in round 2) ----
+
+    @Test
+    void aSingleHugeLineWithoutSpacesIsCutIntoChunksOfAtMost1800() {
+        String huge = "x".repeat(5000);
+        List<Chunk> chunks = TextChunker.split(huge);
+        assertThat(chunks).hasSizeGreaterThan(2);
+        assertThat(chunks).allSatisfy(c -> assertThat(c.text().length()).isLessThanOrEqualTo(1800));
+        assertThat(chunks.stream().mapToInt(c -> c.text().length()).sum()).isEqualTo(5000);   // nothing lost
+    }
+
+    @Test
+    void aHugeLineWithSpacesIsCutAtWordBoundariesAndLosesNoWords() {
+        String huge = "word ".repeat(1000).trim();
+        List<Chunk> chunks = TextChunker.split(huge);
+        assertThat(chunks).allSatisfy(c -> assertThat(c.text().length()).isLessThanOrEqualTo(1800));
+        assertThat(chunks).allSatisfy(c -> assertThat(c.text()).matches("(word )*word"));
+        int words = chunks.stream().mapToInt(c -> c.text().split(" ").length).sum();
+        assertThat(words).isEqualTo(1000);
+    }
+
+    @Test
+    void normalSizedLinesStillGroupUpToTheTargetAsBefore() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 30; i++) sb.append("A sentence of moderate length that ends cleanly here.\n");
+        List<Chunk> chunks = TextChunker.split(sb.toString());
+        assertThat(chunks).hasSizeGreaterThan(1);
+        // every chunk except the last (the remainder) reaches the 1200-character target
+        assertThat(chunks.subList(0, chunks.size() - 1)).allSatisfy(c -> assertThat(c.text().length()).isBetween(1200, 1800));
+    }
 }

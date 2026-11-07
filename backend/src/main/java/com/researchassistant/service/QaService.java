@@ -45,6 +45,11 @@ public class QaService {
         this.llm = llm;
     }
 
+    /** The paper text is untrusted: stop it from containing the markers that fence it off from the question. */
+    static String defang(String s) {
+        return s.replace("EXCERPTS>>>", "EXCERPTS>> >").replace("<<<EXCERPTS", "<< <EXCERPTS");
+    }
+
     public AnswerDto ask(Long id, String questionRaw) {
         String question = questionRaw == null ? "" : questionRaw.trim();
         if (question.isEmpty()) {
@@ -72,7 +77,7 @@ public class QaService {
         List<Chunk> used = text.length() <= WHOLE_PAPER_MAX_CHARS ? all : TextChunker.topMatches(all, question, TOP_CHUNKS);
 
         StringBuilder excerpts = new StringBuilder();
-        for (Chunk c : used) excerpts.append('[').append(c.n()).append("] ").append(c.text()).append("\n\n");
+        for (Chunk c : used) excerpts.append('[').append(c.n()).append("] ").append(defang(c.text())).append("\n\n");
         String user = "Paper title: " + p.getTitle()
                 + "\nExcerpts are " + (basis.equals("ABSTRACT_ONLY") ? "from the abstract only" : "from the full paper text") + ".\n\n"
                 + "<<<EXCERPTS\n" + excerpts + "EXCERPTS>>>\n\nQuestion: " + question;

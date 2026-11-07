@@ -74,16 +74,27 @@ class QaApiTest extends ApiTestBase {
     void citationsToExcerptsThatDoNotExistAreIgnored() throws Exception {
         Paper p = savedPaper("Paper", ABSTRACT, "Some text.");
         when(llm.chat(anyString(), anyString(), anyInt())).thenReturn("Made up citation [9].");
-        ask(p, "Question?").andExpect(status().isOk()).andExpect(jsonPath("$.sources").isEmpty());
+        ask(p, "Question?").andExpect(status().isOk()).andExpect(jsonPath("$.sources").isEmpty())
+                .andExpect(jsonPath("$.answer").value("Made up citation [9]."));
+    }
+
+    @Test
+    void theSameExcerptCitedTwiceIsListedOnce() throws Exception {
+        Paper p = savedPaper("Paper", ABSTRACT, "Some text.");
+        when(llm.chat(anyString(), anyString(), anyInt())).thenReturn("See [1, 1] and again [1].");
+        ask(p, "Question?").andExpect(jsonPath("$.sources.length()").value(1));
     }
 
     @Test
     void groupedCitationsAreAllRecognised() throws Exception {
+        // Each line is longer than the 1200-character target and ends with a full stop, so each becomes its own excerpt.
         StringBuilder text = new StringBuilder();
-        for (int i = 1; i <= 3; i++) text.append("Paragraph ").append(i).append(" has its own distinct content and ends here.\n");
+        for (int i = 1; i <= 3; i++) text.append("Paragraph ").append(i).append(" ").append("filler ".repeat(200)).append("ends here.\n");
         Paper p = savedPaper("Paper", ABSTRACT, text.toString());
-        when(llm.chat(anyString(), anyString(), anyInt())).thenReturn("See [1, 1] for this.");
-        ask(p, "Question?").andExpect(jsonPath("$.sources.length()").value(1));
+        when(llm.chat(anyString(), anyString(), anyInt())).thenReturn("See [1, 3] for this.");
+        ask(p, "Question?").andExpect(jsonPath("$.sources.length()").value(2))
+                .andExpect(jsonPath("$.sources[0].n").value(1))
+                .andExpect(jsonPath("$.sources[1].n").value(3));
     }
 
     @Test
@@ -121,13 +132,15 @@ class QaApiTest extends ApiTestBase {
         when(llm.chat(anyString(), anyString(), anyInt())).thenReturn("ok");
         ask(p, "q".repeat(1000)).andExpect(status().isOk());
         ask(p, "q".repeat(1001)).andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error.code").value("QUESTION_TOO_LONG"));
+                .andExpect(jsonPath("$.error.code").value("QUESTION_TOO_LONG"))
+                .andExpect(jsonPath("$.error.retryable").value(false));
     }
 
     @Test
     void unknownPaperIs404() throws Exception {
         mvc.perform(post("/api/library/555555/ask").contentType(MediaType.APPLICATION_JSON).content("{\"question\":\"Hi there?\"}"))
-                .andExpect(status().isNotFound()).andExpect(jsonPath("$.error.code").value("NOT_IN_LIBRARY"));
+                .andExpect(status().isNotFound()).andExpect(jsonPath("$.error.code").value("NOT_IN_LIBRARY"))
+                .andExpect(jsonPath("$.error.retryable").value(false));
     }
 
     @Test
@@ -164,6 +177,8 @@ class QaApiTest extends ApiTestBase {
         when(llm.chat(anyString(), anyString(), anyInt()))
                 .thenThrow(new ApiException(HttpStatus.BAD_GATEWAY, "LLM_UNAVAILABLE", "Down.", true));
         ask(p, "Question?").andExpect(status().isBadGateway())
-                .andExpect(jsonPath("$.error.code").value("LLM_UNAVAILABLE"));
+                .andExpect(jsonPath("$.error.code").value("LLM_UNAVAILABLE"))
+                .andExpect(jsonPath("$.error.message").value("Down."))
+                .andExpect(jsonPath("$.error.retryable").value(true));
     }
 }
