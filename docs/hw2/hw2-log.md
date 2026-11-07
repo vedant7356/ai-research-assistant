@@ -136,7 +136,7 @@ Coverage barely moved in round 2 and that is the point: the value was in asserti
 
 Evidence: `evidence/cp4-backend-prefix-run-part*.png` (before fixes), `evidence/cp4-frontend-run-partOne.png` (shows the backend 172/0 run and the frontend 147 run), `evidence/cp4-frontend-run-partTwo.png` (coverage table).
 
-Still to do for CP5: seeded-fault comparison (`mutation/seeded_faults.py`, 21 planted faults, initial suite vs final suite).
+Seeded-fault comparison (initial 10/21, round 2 16/21, final 21/21) is in `cp5-final-evaluation.md` and `mutation/results.md`.
 
 ## Checkpoints
 
@@ -145,6 +145,6 @@ Still to do for CP5: seeded-fault comparison (`mutation/seeded_faults.py`, 21 pl
 - [x] CP2 initial evaluation (see cp2-evaluation.md)
 - [x] CP3 improvement round 1 (feedback-driven)
 - [x] CP4 improvement round 2 (requirements and fault driven)
-- [ ] CP5 final evaluation
+- [x] CP5 final evaluation (see cp5-final-evaluation.md)
 - [ ] CP6 README + clean-clone test + push
 - [ ] CP7 report + submit

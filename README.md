@@ -117,8 +117,52 @@ React + TypeScript (Vite, :5173)  --/api proxy-->  Spring Boot 4 (Java 21, :8080
 - Very long papers are cut to about 60,000 characters for summaries; Q&A uses the best-matching excerpts, found by keyword matching (no embeddings), so a question phrased very differently from the text can miss the right passage.
 - The LLM service allows 20 requests per minute per user; the app shows a retry message when it is hit. It may also need the Purdue network or VPN off campus.
 - LLM output can be wrong. The UI labels it AI-generated; check important details against the paper.
-- No authentication (single local user) and no automated tests (planned for HW2).
+- No authentication (single local user). See **Testing** for what the automated tests do and do not cover.
+
+## Testing
+
+The test suite needs **no PostgreSQL, no API key and no network**: the backend tests run on an in-memory H2 database (the `test` profile in `backend/src/test/resources/application-test.properties`), and OpenAlex and the LLM are always mocked or faked locally. Tests use fake keys and URLs only, and never read `.env`.
+
+Prerequisites: Java 21, and Node.js 22 or 24 (Node 25 prints `EBADENGINE` warnings from jsdom/vitest but the tests still run). Run both commands from inside `backend/` and `frontend/`, because the contract test reads `../contract/error-envelope.json`.
+
+**Backend** (JUnit 5, Mockito, Spring Boot test, JaCoCo), from `backend/`:
+
+```bash
+./mvnw clean test
+```
+
+Coverage report (HTML): `backend/target/site/jacoco/index.html`. One-line summary:
+
+```bash
+awk -F, 'NR>1{li+=$8;lc+=$9;bi+=$6;bc+=$7} END{printf "lines %d/%d (%.1f%%)  branches %d/%d (%.1f%%)\n",lc,li+lc,100*lc/(li+lc),bc,bi+bc,100*bc/(bi+bc)}' target/site/jacoco/jacoco.csv
+```
+
+**Frontend** (Vitest, React Testing Library, jsdom, V8 coverage), from `frontend/`:
+
+```bash
+npm install
+npm test                  # run once
+npm run test:coverage     # with coverage table; HTML in frontend/coverage/index.html
+```
+
+Latest results at submission: backend 177 tests passing, 97.7% line / 83.9% branch coverage; frontend 147 tests passing, 98.3% line / 94.5% branch coverage.
+
+What the suites cover:
+- `backend/src/test/java/.../service`: unit tests for the chunker, PDF extraction and metadata heuristics, the OpenAlex and LLM clients (against a local fake HTTP server), error handling and save/upload race fallbacks.
+- `backend/src/test/java/.../api`: HTTP-level tests of every endpoint on H2, including malformed and hostile input, prompt-injection fencing and the error format.
+- `frontend/src`: tests next to each component, page and the API client.
+- `contract/error-envelope.json`: one shared definition of the error format, checked by a backend test and a frontend test.
+
+Optional seeded-fault check (about 10 minutes, needs everything committed; works in throw-away copies under `/tmp`):
+
+```bash
+python3 docs/hw2/mutation/seeded_faults.py
+```
+
+It plants 21 one-line bugs one at a time and reports which suite catches them (results in `docs/hw2/mutation/results.md`).
+
+Not covered: the real database (PostgreSQL), the real OpenAlex and LLM services, the React bootstrap file `main.tsx`, and a real browser (no end-to-end tests). The full HW2 testing log, evaluation and findings are in `docs/hw2/`.
 
 ## Project documents
 
-`docs/` holds the project plan, requirements checklist, architecture notes, checkpoint log, testing log, and the coding-agent reflection log used for the report.
+`docs/` holds the project plan, requirements checklist, architecture notes, checkpoint log, testing log, and the coding-agent reflection log used for the report. `docs/hw2/` holds the Homework 2 test-generation log, evaluations (`cp2-evaluation.md`, `cp5-final-evaluation.md`) and evidence screenshots.
