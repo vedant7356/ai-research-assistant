@@ -1,0 +1,472 @@
+
+ RUN  v5.1.0 /sessions/rcw-01hdhgohyxfxkgcommkyectb/scratch/fe
+      Coverage enabled with v8
+
+ ✓ src/pages/UploadPage.test.tsx (18 tests) 468ms
+ ❯ src/pages/LibraryPage.test.tsx (14 tests | 1 failed) 620ms
+   ❯ LibraryPage (14)
+     ✓ loads and lists the saved papers 71ms
+     ✓ uses the singular for one paper 10ms
+     × shows source, text status and summary badges and the file name of uploads 14ms
+     ✓ abbreviates many authors and shows unknown authors and years 13ms
+     ✓ links titles and Details to the paper page 31ms
+     ✓ invites the user to discover papers when the library is empty 9ms
+     ✓ shows a loading placeholder first 4ms
+     ✓ shows an error with a working retry button 32ms
+     ✓ filters by text after a short pause in typing 290ms
+     ✓ reloads when the source or sort changes 37ms
+     ✓ says when filters match nothing and clears them 31ms
+     ✓ asks for confirmation before removing and can be cancelled 25ms
+     ✓ removes a confirmed paper and refreshes the list 28ms
+     ✓ keeps the paper and shows the error when removing fails 24ms
+ ✓ src/api/client.test.ts (16 tests) 8ms
+ ✓ src/components/SummaryPanel.test.tsx (10 tests) 204ms
+ ❯ src/components/PaperCard.test.tsx (12 tests | 2 failed) 140ms
+   ❯ PaperCard (12)
+     ✓ shows title, authors, year and abstract 42ms
+     ✓ abbreviates long author lists and handles missing authors and year 4ms
+     ✓ truncates a long abstract and expands it on request 26ms
+     ✓ offers no expand button for a short abstract 3ms
+     ✓ says so when there is no abstract 2ms
+     ✓ labels papers with and without an open-access PDF 2ms
+     ✓ shows an already saved paper as saved and disables the button 3ms
+     ✓ saves the paper and then shows it as saved 13ms
+     × shows the server message when saving fails and lets the user try again 15ms
+     × shows a generic message for unexpected save errors 11ms
+     ✓ disables the button while saving 15ms
+     ✓ links to the original paper in a new tab, and omits the link when there is no url 5ms
+ ❯ src/components/AskPanel.test.tsx (11 tests | 2 failed) 473ms
+   ❯ AskPanel (11)
+     ✓ is collapsed until the toggle is pressed 70ms
+     ✓ is always open and has no toggle when embedded 3ms
+     ✓ sends the trimmed question and shows the answer, passages and basis 81ms
+     ✓ says when the answer came from the abstract only 33ms
+     ✓ shows the not-in-paper answer like any other answer 73ms
+     ✓ keeps earlier question and answer pairs 86ms
+     × shows the server error message under the question 37ms
+     × shows a generic message for unexpected errors 36ms
+     ✓ does not allow empty or whitespace-only questions 12ms
+     ✓ shows a progress message and disables asking while waiting 41ms
+     ✓ limits the question box to 1000 characters 1ms
+ ✓ src/components/Markdown.test.tsx (7 tests) 47ms
+ ❯ src/pages/DiscoverPage.test.tsx (16 tests | 2 failed) 10448ms
+   ❯ DiscoverPage (16)
+     ✓ starts with example topics and does not search 64ms
+     ✓ searches when the form is submitted and lists the results 95ms
+     ✓ rejects an empty search without calling the backend 22ms
+     ✓ treats a whitespace-only query as empty 24ms
+     ✓ reads query and filters from the url 11ms
+     ✓ searches again when a filter changes 57ms
+     × shows a loading message while the search runs 10017ms
+     ✓ shows the error with a retry button for retryable failures 30ms
+     × offers no retry for failures that retrying cannot fix 9ms
+     ✓ explains when nothing was found and lets the user reset active filters 24ms
+     ✓ does not offer to reset filters when none are active 9ms
+     ✓ loads more results and appends them until everything is shown 25ms
+     ✓ keeps the existing results when loading more fails 19ms
+     ✓ searches for an example topic when its chip is clicked 13ms
+     ✓ clears the search box and returns to the start screen 17ms
+     ✓ formats large result counts with separators 10ms
+ ❯ src/components/Layout.test.tsx (7 tests | 2 failed) 10115ms
+   ❯ Layout (7)
+     ✓ shows the navigation links and the routed page 49ms
+     ✓ marks the current page as active 7ms
+     ✓ shows backend and database as up when the health check succeeds 10ms
+     × shows checking while the health request is pending 10015ms
+     ✓ shows the database as down when only the database fails 18ms
+     × shows the backend as unreachable when the health request fails 8ms
+     ✓ uses the wide layout only on the home page 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/AskPanel.test.tsx > AskPanel > shows the server error message under the question
+Error: This paper has no text or abstract to answer from.
+ ❯ src/components/AskPanel.test.tsx:81:43
+     79|
+     80|   it('shows the server error message under the question', async () => {
+     81|     vi.mocked(askPaper).mockRejectedValue(new ApiError('NO_CONTENT', '…
+       |                                           ^
+     82|     render(<AskPanel paperId={5} embedded />)
+     83|     await ask('Hello there?')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  src/components/AskPanel.test.tsx > AskPanel > shows a generic message for unexpected errors
+Error: boom
+ ❯ src/components/AskPanel.test.tsx:88:43
+     86|
+     87|   it('shows a generic message for unexpected errors', async () => {
+     88|     vi.mocked(askPaper).mockRejectedValue(new Error('boom'))
+       |                                           ^
+     89|     render(<AskPanel paperId={5} embedded />)
+     90|     await ask('Hello there?')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  src/components/Layout.test.tsx > Layout > shows checking while the health request is pending
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/components/Layout.test.tsx:26:1
+     24| }
+     25|
+     26| beforeEach(() => vi.mocked(fetchHealth).mockReset())
+       | ^
+     27|
+     28| describe('Layout', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  src/components/Layout.test.tsx > Layout > shows the backend as unreachable when the health request fails
+Error: network
+ ❯ src/components/Layout.test.tsx:68:46
+     66|
+     67|   it('shows the backend as unreachable when the health request fails',…
+     68|     vi.mocked(fetchHealth).mockRejectedValue(new Error('network'))
+       |                                              ^
+     69|     renderAt('/')
+     70|     expect(await screen.findByText(/Backend unreachable/)).toBeInTheDo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  src/components/PaperCard.test.tsx > PaperCard > shows the server message when saving fails and lets the user try again
+Error: Something went wrong on the server.
+ ❯ src/components/PaperCard.test.tsx:84:44
+     82|
+     83|   it('shows the server message when saving fails and lets the user try…
+     84|     vi.mocked(savePaper).mockRejectedValue(new ApiError('INTERNAL', 'S…
+       |                                            ^
+     85|     render(<PaperCard paper={makePaper()} />)
+     86|     await userEvent.click(screen.getByRole('button', { name: /save to …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  src/components/PaperCard.test.tsx > PaperCard > shows a generic message for unexpected save errors
+Error: boom
+ ❯ src/components/PaperCard.test.tsx:92:44
+     90|
+     91|   it('shows a generic message for unexpected save errors', async () =>…
+     92|     vi.mocked(savePaper).mockRejectedValue(new Error('boom'))
+       |                                            ^
+     93|     render(<PaperCard paper={makePaper()} />)
+     94|     await userEvent.click(screen.getByRole('button', { name: /save to …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  src/pages/DiscoverPage.test.tsx > DiscoverPage > shows a loading message while the search runs
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/pages/DiscoverPage.test.tsx:29:1
+     27| }
+     28|
+     29| beforeEach(() => vi.mocked(searchPapers).mockReset())
+       | ^
+     30|
+     31| describe('DiscoverPage', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  src/pages/DiscoverPage.test.tsx > DiscoverPage > offers no retry for failures that retrying cannot fix
+Error: Check OPENALEX_API_KEY.
+ ❯ src/pages/DiscoverPage.test.tsx:113:47
+    111|
+    112|   it('offers no retry for failures that retrying cannot fix', async ()…
+    113|     vi.mocked(searchPapers).mockRejectedValue(new ApiError('SEARCH_AUT…
+       |                                               ^
+    114|     renderPage('/discover?q=rag')
+    115|     expect(await screen.findByRole('alert')).toHaveTextContent('Check …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  src/pages/LibraryPage.test.tsx > LibraryPage > shows source, text status and summary badges and the file name of uploads
+TestingLibraryElementError: Found multiple elements with the text: Saved from search
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+<option
+  value="SAVED"
+>
+  Saved from search
+</option>
+
+Ignored nodes: comments, script, style
+<span
+  class="badge badge-neutral"
+>
+  Saved from search
+</span>
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="stack"
+    >
+      <div
+        style="display: flex; flex-direction: column; gap: 6px;"
+      >
+        <h1
+          class="serif h1"
+          style="font-size: 36px; font-weight: 500;"
+        >
+          My Library
+        </h1>
+        <p
+          style="color: var(--muted);"
+        >
+          Papers you saved are stored in the database, so they are here after a refresh or a restart.
+        </p>
+      </div>
+      <div
+        style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-size: 14px;"
+      >
+        <label
+          class="sr"
+          for="lib-q"
+        >
+          Search your library
+        </label>
+        <input
+          class="input"
+          id="lib-q"
+          placeholder="Filter by title or author…"
+          style="flex: 1 1 0%; min-size: 200px 38px;"
+          value=""
+        />
+        <label
+          style="display: flex; align-items: center; gap: 8px; color: var(--text-2);"
+        >
+          Source
+          <select
+            class="input"
+          >
+            <option
+              value="ALL"
+            >
+              All
+            </option>
+            <option
+              value="SAVED"
+            >
+              Saved from search
+            </option>
+            <option
+              value="UPLOAD"
+            >
+              Uploaded PDFs
+            </option>
+          </select>
+        </label>
+        <label
+          style="display: flex; align-items: center; gap: 8px; color: var(--text-2);"
+        >
+          Sort
+          <select
+            class="input"
+          >
+            <option
+              value="recent"
+            >
+              Recently added
+            </option>
+            <option
+              value="title"
+            >
+              Title
+            </option>
+            <option
+              value="year"
+            >
+              Year (newest)
+            </option>
+          </select>
+        </label>
+      </div>
+      <div
+        style="display: flex; flex-direction: column; gap: 12px;"
+      >
+        <p
+          aria-live="polite"
+          style="color: var(--muted); font-size: 14px;"
+        >
+          2
+           
+          papers
+        </p>
+        <article
+          class="card"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 18px 22px;"
+        >
+          <div
+            style="display: flex; gap: 6px; flex-wrap: wrap;"
+          >
+            <span
+              class="badge badge-neutral"
+            >
+              Uploaded PDF
+            </span>
+            <span
+              class="badge badge-ok"
+            >
+              Full text
+            </span>
+            <span
+              class="badge badge-ok"
+            >
+              Summary ready
+            </span>
+          </div>
+          <h3
+            class="serif"
+            style="font-size: 20px; font-weight: 600; line-height: 1.3;"
+          >
+            <a
+              data-discover="true"
+              href="/library/1"
+              style="color: inherit; text-decoration: none;"
+            >
+              Library paper 1
+            </a>
+          </h3>
+          <p
+            style="font-size: 13px; color: var(--muted);"
+          >
+            Ann Lee
+             · 
+            2021
+             · Added 
+            3/4/2026
+             · my-paper.pdf
+          </p>
+          <div
+            style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 4px;"
+          >
+            <a
+              class="btn btn-sm btn-ghost"
+              data-discover="true"
+              href="/library/1"
+            >
+              Details
+            </a>
+            <button
+              aria-expanded="false"
+              class="btn btn-sm"
+            >
+              View summary
+            </button>
+            <button
+              aria-expanded="false"
+              class="btn btn-sm"
+            >
+              Ask a question
+            </button>
+            <button
+              class="btn btn-sm btn-ghost"
+            >
+              Remove
+            </button>
+          </div>
+        </article>
+        <article
+          class="card"
+          style="display: flex; flex-direction: column; gap: 8px; padding: 18px 22px;"
+        >
+          <div
+            style="display: flex; gap: 6px; flex-wrap: wrap;"
+          >
+            <span
+              class="badge badge-neutral"
+            >
+              Saved from search
+            </span>
+            <span
+              class="badge badge-warn"
+            >
+              Abstract only
+            </span>
+          </div>
+          <h3
+            class="serif"
+            style="font-size: 20px; font-weight: 600; line-height: 1.3;"
+          >
+            <a
+              data-discover="true"
+              href="/library/2"
+              style="color: inherit; text-decoration: none;"
+            >
+              Library paper 2
+            </a>
+          </h3>
+          <p
+            style="font-size: 13px; color: var(--muted);"
+          >
+            Ann Lee
+             · 
+            2021
+             · Added 
+            3/4/2026
+          </p>
+          <div
+            style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 4px;"
+          >
+            <a
+              class="btn btn-sm btn-ghost"
+              data-discover="true"
+              href="/library/2"
+            >
+              Details
+            </a>
+            <a
+              class="btn btn-sm btn-ghost"
+              href="https://example.org/2"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Original paper
+            </a>
+            <button
+              aria-expanded="false"
+              class="btn btn-sm"
+            >
+              Summarize
+            </button>
+            <button
+              aria-expanded="false"
+              class="btn btn-sm"
+            >
+              Ask a question
+            </button>
+            <button
+              class="btn btn-sm btn-ghost"
+            >
+              Remove
+            </button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getElementError node_modules/@testing-library/dom/dist/query-helpers.js:20:35
+ ❯ getMultipleElementsFoundError node_modules/@testing-library/dom/dist/query-helpers.js:23:10
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:55:13
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/pages/LibraryPage.test.tsx:55:19
+     53|     await screen.findByText('Library paper 1')
+     54|     expect(screen.getByText('Uploaded PDF')).toBeInTheDocument()
+     55|     expect(screen.getByText('Saved from search')).toBeInTheDocument()
+       |                   ^
+     56|     expect(screen.getByText('Full text')).toBeInTheDocument()
+     57|     expect(screen.getByText('Abstract only')).toBeInTheDocument()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  5 failed | 4 passed (9)
+      Tests  9 failed | 102 passed (111)
+   Start at  21:25:57
+   Duration  12.36s (tests 88%, environment 7%, setup 2%, transform 1%, import 1%)
+
